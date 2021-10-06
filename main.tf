@@ -68,8 +68,31 @@ module "argocd" {
   }
 }
 #
-module "github-actions-controller" {
+module "external_dns" {
   depends_on = [module.argocd]
+
+  source       = "github.com/provectus/sak-external-dns"
+  cluster_name = module.kubernetes.cluster_name
+  argocd       = module.argocd.state
+  mainzoneid   = data.aws_route53_zone.this.zone_id
+  hostedzones  = local.domain
+  tags         = local.tags
+}
+
+module "cert-manager" {
+  depends_on   = [module.argocd]
+
+  source       = "github.com/provectus/sak-cert-manager"
+  cluster_name = module.kubernetes.cluster_name
+  vpc_id       = module.network.vpc_id
+  argocd       = module.argocd.state
+  email        = "grusakov@provectus.com"
+  zone_id      = module.external_dns.zone_id
+  domains      = local.domain
+}
+
+module "github-actions-controller" {
+  depends_on = [module.argocd, module.cert-manager]
   source = "/Users/garus/projects/gfrntz/tf-github-actions-controler"
   cluster_name = module.kubernetes.cluster_name
   argocd       = module.argocd.state
