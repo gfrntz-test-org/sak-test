@@ -48,14 +48,14 @@ module "kubernetes" {
 
 module "argocd" {
   depends_on = [module.network.vpc_id, module.kubernetes.cluster_name, data.aws_eks_cluster.cluster, data.aws_eks_cluster_auth.cluster]
-  source     = "github.com/provectus/sak-argocd?ref=0c344d088c98deff458522d0a0c641832b560dd7"
+  source     = "/Users/garus/projects/gfrntz/sak-argocd"
 
 
   branch       = var.argocd.branch
   owner        = var.argocd.owner
   repository   = var.argocd.repository
   cluster_name = module.kubernetes.cluster_name
-  path_prefix  = "apps/"
+  path_prefix  = "./"
 
   domains = local.domain
   ingress_annotations = {
