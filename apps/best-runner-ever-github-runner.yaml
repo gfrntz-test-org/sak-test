@@ -1,0 +1,7 @@
+"apiVersion": "actions.summerwind.dev/v1alpha1"
+"kind": "Runner"
+"metadata":
+  "name": "best-runner-ever"
+  "namespace": "github-actions-controller"
+"spec":
+  "repository": "gfrntz-test-org/tf-github-actions-controler"
