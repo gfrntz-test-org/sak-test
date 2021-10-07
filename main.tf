@@ -94,11 +94,22 @@ module "cert-manager" {
 module "github-actions-controller" {
   depends_on = [module.argocd, module.cert-manager]
   source = "/Users/garus/projects/gfrntz/tf-github-actions-controler"
-  cluster_name = module.kubernetes.cluster_name
   argocd       = module.argocd.state
 
   github_pat = "1"
 
+}
+
+module "github-actions-runner" {
+  depends_on = [module.argocd, module.github-actions-controller]
+  source = "/Users/garus/projects/gfrntz/tf-github-actions-runner"
+
+  argocd            = module.argocd.state
+
+  organization_name = "gfrntz-test-org"
+  repository_name   = "tf-github-actions-controler"
+  runner_namespace  = "github-actions-controller"
+  runner_name       = "best-runner-ever"
 }
 #
 # #Apps
